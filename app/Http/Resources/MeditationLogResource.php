@@ -30,7 +30,7 @@ class MeditationLogResource extends JsonResource
 
     private function calculateMostFrequentDays($meditationLogs)
     {
-        $mostFrequentDayCount = 0;
+        $mostFrequentDayCount = 1;
         $counter = $meditationLogs->count() ? 1 : 0;
         foreach ($meditationLogs as $meditationLog) {
 
