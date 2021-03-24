@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Meditation;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MeditationLogRequest;
+use App\Http\Resources\CompletedMeditationResource;
+use App\Http\Resources\GeneralResponseResource;
 use App\Http\Resources\MeditationLogCollection;
 use App\Http\Resources\MeditationLogResource;
 use App\Repositories\MeditationLogInterface;
@@ -30,9 +32,15 @@ class MeditationLogController extends Controller
         //validate request
         $request->validated();
 
-        $meditationLog = $this->meditationLogRepo->create($request->only(['duration', 'meditation_id']));
+        try {
+            $meditationLog = $this->meditationLogRepo->create($request->only(['duration', 'meditation_id']));
+            return new CompletedMeditationResource($meditationLog);
 
-        return new MeditationLogResource($meditationLog);
+        }
+        catch (\Exception $e) {
+            return new GeneralResponseResource(null,401,'An error occured',false);
+        }
+
     }
 
     public function getMeditationLogs(MeditationLogService $meditationLogService)
