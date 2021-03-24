@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Resources\ErrorResource;
 use App\Http\Resources\GeneralResponse;
+use App\Http\Resources\GeneralResponseResource;
 use App\Http\Resources\TokenResource;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,12 @@ class LoginController extends Controller
 
         }
 
-        return new ErrorResource('');
+        return new GeneralResponseResource(
+            null,
+            401,
+            'Sorry the credentials you are using are invalid',
+            false
+        );
 
     }
 }
