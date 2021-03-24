@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  php:
+    build:
+      context: .
+    container_name: m_php8
+    volumes:
+      - ./:/var/www/html
+    ports:
+    - "8888:80"
+    depends_on:
+      - db
+    command: ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
+
+  db:
+    image: mysql:5.7
+    container_name: m_mysql
+    environment:
+        MYSQL_DATABASE: 'm_case'
+        MYSQL_USER: 'dev'
+        MYSQL_PASSWORD: '123456'
+        MYSQL_ROOT_PASSWORD: '123456'
+    ports:
+      - '6060:3306'
+
+
