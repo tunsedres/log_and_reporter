@@ -2,12 +2,28 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
+use App\Services\MeditationLogService;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Lang;
 
 class MeditationLogResource extends JsonResource
 {
+    /**
+     * @var MeditationLogService
+     */
+    private $meditationLogService;
+
+    /**
+     * MeditationLogResource constructor.
+     * @param $resource
+     * @param MeditationLogService $meditationLogService
+     */
+    public function __construct($resource, MeditationLogService $meditationLogService)
+    {
+        parent::__construct($resource);
+        $this->meditationLogService = $meditationLogService;
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -18,7 +34,7 @@ class MeditationLogResource extends JsonResource
     {
         return [
             'meditation_completed' => $this->count(),
-            'most_frequent_meditation_days_count' => $this->calculateMostFrequentDays($this->resource),
+            'most_frequent_meditation_days_count' => $this->meditationLogService->calculateMostFrequentDays($this->resource),
             'total_meditation_time' => $this->sum('duration')
         ];
     }
@@ -28,24 +44,4 @@ class MeditationLogResource extends JsonResource
         return Lang::get('messages.success');
     }
 
-    private function calculateMostFrequentDays($meditationLogs)
-    {
-        $mostFrequentDayCount = 1;
-        $counter = $meditationLogs->count() ? 1 : 0;
-        foreach ($meditationLogs as $meditationLog) {
-
-           if(isset($previousDate) && Carbon::parse($meditationLog->created_at)->diffInDays($previousDate) == 1) {
-               $counter++;
-               $mostFrequentDayCount = $counter;
-           }
-           else {
-               $counter = 1;
-           }
-
-           $previousDate = $meditationLog->created_at;
-        }
-
-
-        return $mostFrequentDayCount;
-    }
 }

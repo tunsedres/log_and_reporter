@@ -7,6 +7,7 @@ use App\Http\Requests\MeditationLogRequest;
 use App\Http\Resources\MeditationLogCollection;
 use App\Http\Resources\MeditationLogResource;
 use App\Repositories\MeditationLogInterface;
+use App\Services\MeditationLogService;
 
 class MeditationLogController extends Controller
 {
@@ -34,11 +35,11 @@ class MeditationLogController extends Controller
         return new MeditationLogResource($meditationLog);
     }
 
-    public function getMeditationLogs()
+    public function getMeditationLogs(MeditationLogService $meditationLogService)
     {
         $meditationLogs = $this->meditationLogRepo->getByDate();
 
-        return new MeditationLogResource($meditationLogs);
+        return new MeditationLogResource($meditationLogs, $meditationLogService);
     }
 
     public function getMeditationStatistics()
